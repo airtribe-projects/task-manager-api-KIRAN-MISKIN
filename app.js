@@ -1,18 +1,9 @@
 const express = require('express');
 const app = express();
+const tasksRouter = require('./router/tasksrouter');
 const port = 3000;
-
-// Importing the tasks router
-const tasksrouter = require('./router/tasksrouter')
-
-// Middleware to parse JSON bodies
 app.use(express.json());
-
-// Middleware to parse URL-encoded bodies (form submissions etc.)
-app.use(express.urlencoded({ extended: true }));
-
-// Route handler: All task-related APIs will be prefixed with /api/v1/tasks
-app.use('/api/v1/tasks', tasksrouter);
+app.use('/tasks', tasksRouter);
 
 // Fallback route for handling undefined paths (404 errors)
 app.use((req, res, next) => {
@@ -22,13 +13,11 @@ app.use((req, res, next) => {
   });
 });
 
-// Starting the server on defined port
-app.listen(port, (err) => {
-    if (err) {
-        return console.log('Something bad happened', err);
-    }
-    console.log(`Server is listening on port ${port}`);
-});
+// app.listen(3000, (err)=>{
+//  if (err) {
+//     return console.log('Something bad happened', err);
+//     }
+//     console.log(`Server is listening on port ${port}`);
+// })
 
-// Exporting the app (useful for testing)
 module.exports = app;

@@ -45,8 +45,7 @@ const createtask = (req, res) => {
             id,
             title,
             description,
-            completed,
-            createdAt
+            completed
         };
 
         // Handle task creation without 'priority' field
@@ -56,7 +55,7 @@ const createtask = (req, res) => {
                 message: "Task Created Successfully",
                 task: response
             };
-            return sendResponse(res, 200, data);
+            return sendResponse(res, 201, data);
         } else {
             // Validate 'priority' value if present
             let check = priority.toLowerCase();
@@ -75,7 +74,7 @@ const createtask = (req, res) => {
                 message: "Task Created Successfully",
                 task: response
             };
-            return sendResponse(res, 200, data);
+            return sendResponse(res, 201, data);
         }
 
     } catch (err) {

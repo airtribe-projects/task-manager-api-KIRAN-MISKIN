@@ -25,9 +25,9 @@ const gettasksbyid = (req, res) => {
 
         // If matching task is found, return it; otherwise, return not found message
         if (filteredTasks.length !== 0) {
-            return sendResponse(res, 200, filteredTasks)
+            return sendResponse(res, 200, filteredTasks[0])
         } else {
-            return sendResponse(res, 400, `Task not present for Id ${id}`)
+            return sendResponse(res, 404, `Task not present for Id ${id}`)
         }
 
     } catch (err) {
