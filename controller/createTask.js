@@ -1,44 +1,40 @@
 let { tasks, counter } = require('../model/localmemory');
-const createdAtdate = require('../controller/dateAndTime');
 const { sendResponse } = require('../utils/responseHandler');
+const {bodyValidation} = require('../utils/bodyvalidation')
 
 // Controller to create a new task
-const createtask = (req, res) => {
+const createTask = (req, res) => {
     try {
         // Reject if any query parameters are sent with POST request
         if (Object.keys(req.query).length > 0) {
             return sendResponse(res, 400, 'Query parameters are not accepted');
         }
 
-        // Define allowed keys in request body
-        const allowedBody = ["title", "description", "completed", "priority"];
-        const queryKeys = Object.keys(req.body);
+        // // Define allowed keys in request body
+        // const allowedBody = ["title", "description", "completed", "priority"];
+        // const queryKeys = Object.keys(req.body);
 
-        // Identify and reject any invalid keys in request body
-        const invalidbody = queryKeys.filter(key => !allowedBody.includes(key));
-        if (invalidbody.length > 0) {
-            return sendResponse(res, 400, `Invalid body parameter(s): ${invalidbody.join(', ')}. Only 'title', 'description', 'completed' and 'priority' are allowed.`);
-        }
+        // // Identify and reject any invalid keys in request body
+        // const invalidBody = queryKeys.filter(key => !allowedBody.includes(key));
+        // if (invalidBody.length > 0) {
+        //     return sendResponse(res, 400, `Invalid body parameter(s): ${invalidBody.join(', ')}. Only 'title', 'description', 'completed' and 'priority' are allowed.`);
+        // }
 
-        // Destructure required fields from request body
-        const { title, description, completed, priority } = req.body;
+        // // Destructure required fields from request body
+        // const { title, description, completed, priority } = req.body;
 
         // Validate presence of mandatory fields
-        if (title === undefined || description === undefined || completed === undefined) {
-            return sendResponse(res, 400, "Missing required field 'Title', 'description', and 'completed' to create a task.");
-        }
-
+        // if (title === undefined || description === undefined || completed === undefined) {
+        //     return sendResponse(res, 400, "Missing required field 'Title', 'description', and 'completed' to create a task.");
+        // }
+        const { title, description, completed, priority } = bodyValidation(req,res)
         // Validate data types for required fields
         if (typeof title !== "string" || typeof description !== "string" || typeof completed !== "boolean") {
             return sendResponse(res, 400, "Invalid input: 'title' and 'description' must be strings, and 'completed' must be a boolean.");
         }
 
-        // Generate createdAt date
-        let createdAt = createdAtdate();
-
         //Generate task ID by incrementing counter
-        counter = counter + 1;
-        let id = counter;
+       let id = ++counter;
 
         // Prepare base task object
         let response = {
@@ -60,9 +56,9 @@ const createtask = (req, res) => {
             // Validate 'priority' value if present
             let check = priority.toLowerCase();
             const allowedPriority = ["low", "medium", "high"];
-            const invalidpriority = allowedPriority.includes(check);
+            const isValidPriority = allowedPriority.includes(check);
 
-            if (!invalidpriority) {
+            if (!isValidPriority) {
                 return sendResponse(res, 400, "Priority accepts only 'Low', 'Medium' and 'High' values");
             }
 
@@ -79,9 +75,9 @@ const createtask = (req, res) => {
 
     } catch (err) {
         // Log and handle any unexpected errors
-        console.log("Error at createtask function", err);
+        console.error(`[createtask Error] ${new Date().toISOString()} - ${err.stack}`);
         sendResponse(res, 400, err.message);
     }
 };
 
-module.exports = { createtask };
+module.exports = { createTask };

@@ -1,7 +1,7 @@
-let { tasks } = require('../model/localmemory');
+const { tasks } = require('../model/localmemory');
 const { sendResponse } = require('../utils/responseHandler');
 
-const getalltasks = (req, res) => {
+const getAllTasks = (req, res) => {
     try {
         const allowedQuery = ['completed'];
         const queryKeys = Object.keys(req.query);
@@ -49,4 +49,4 @@ const getalltasks = (req, res) => {
     }
 };
 
-module.exports = { getalltasks };
+module.exports = { getAllTasks };

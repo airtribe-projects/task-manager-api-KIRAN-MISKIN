@@ -9,15 +9,8 @@ app.use('/tasks', tasksRouter);
 app.use((req, res, next) => {
   res.status(404).json({
     status: "Error",
-    message: `Route not found: ${req.method} ${req.originalUrl}`,
+    message: `Route not found: ${req.originalUrl}`,
   });
 });
-
-// app.listen(3000, (err)=>{
-//  if (err) {
-//     return console.log('Something bad happened', err);
-//     }
-//     console.log(`Server is listening on port ${port}`);
-// })
 
 module.exports = app;

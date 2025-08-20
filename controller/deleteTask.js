@@ -3,43 +3,42 @@ const { sendResponse } = require('../utils/responseHandler');
 
 const deletetask = (req, res) => {
     try {
-        // Check if any query parameters are present; if so, return an error response
+        // Reject query parameters
         if (Object.keys(req.query).length > 0) {
-            return sendResponse(res, 400, 'Query parameters are not accepted');
+            return sendResponse(res, 400, 'Query parameters are not accepted for this route.');
         }
 
-        // Check if request body is not empty; DELETE requests should not include a body
+        // DELETE should not have a body
         if (Object.keys(req.body).length > 0) {
-            return sendResponse(res, 400, 'Delete request should not contain a request body.');
+            return sendResponse(res, 400, 'DELETE request should not contain a request body.');
         }
 
-        // Extract the id from route parameters
+        // Extract ID from path
         let { id } = req.params;
 
-        // Validate that id is a number
+        // Validate ID is numeric
         if (isNaN(id)) {
-            return sendResponse(res, 404, 'Invalid Id provided');
+            return sendResponse(res, 400, 'Invalid task ID. Please provide a numeric ID.');
         }
 
-        id = parseInt(id);
+        id = parseInt(id, 10);
 
-        // Find the index of the task with the given id
+        // Find task index
         const index = tasks.findIndex(task => task.id === id);
 
-        // If no task is found with that id, return an error
-        if (index < 0) {
-            return sendResponse(res, 404, 'Invalid id provided');
+        // Handle task not found
+        if (index === -1) {
+            return sendResponse(res, 404, `No task found with ID ${id}.`);
         }
 
-        // Remove the task from the list
+        // Remove task
         tasks.splice(index, 1);
 
-        // Send a success response
-        return sendResponse(res, 200, 'Deleted Successfully');
+        return sendResponse(res, 200, `Task with ID ${id} deleted successfully.`);
     } catch (err) {
-        // Log and return the error if something goes wrong
-        console.log('Error at deleteTask function', err);
-        sendResponse(res, 400, err.message);
+        // Structured error log
+        console.error(`[deleteTask Error] ${new Date().toISOString()} - ${err.stack}`);
+        return sendResponse(res, 500, 'Internal Server Error');
     }
 };
 
