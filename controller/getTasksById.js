@@ -1,7 +1,7 @@
 let { tasks } = require('../model/localmemory')
 const { sendResponse } = require('../utils/responseHandler')
 
-const gettasksbyid = (req, res) => {
+const getTasksById = (req, res) => {
     try {
         // Return error if the GET request contains a body
         if (Object.keys(req.body).length > 0) {
@@ -12,20 +12,19 @@ const gettasksbyid = (req, res) => {
 
         // Validate that the id is a number
         if (isNaN(id)) {
-            return sendResponse(res, 404, "Invalid Id provided")
+            return sendResponse(res, 400, "Invalid Id provided")
         }
 
         // Convert id to integer for comparison
         id = parseInt(id)
 
         // Filter tasks array to find task with matching id
-        let filteredTasks = tasks.filter(task =>
+        let filteredTasks = tasks.find(task =>
             task.id === id
         )
-
         // If matching task is found, return it; otherwise, return not found message
-        if (filteredTasks.length !== 0) {
-            return sendResponse(res, 200, filteredTasks[0])
+        if (filteredTasks !== undefined) {
+            return sendResponse(res, 200, filteredTasks)
         } else {
             return sendResponse(res, 404, `Task not present for Id ${id}`)
         }
@@ -33,8 +32,8 @@ const gettasksbyid = (req, res) => {
     } catch (err) {
         // Log and return error message if exception occurs
         console.log("Error at gettasksbyid function", err)
-        sendResponse(res, 400, err.message)
+        sendResponse(res, 500, "Internal Server Error")
     }
 }
 
-module.exports = { gettasksbyid }
+module.exports = { getTasksById }

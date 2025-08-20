@@ -1,4 +1,4 @@
-let { tasks } = require('../model/localmemory')
+let { tasks } = require("../model/localmemory")
 const { sendResponse } = require('../utils/responseHandler')
 
 const updateTask = (req, res) => {
@@ -16,15 +16,14 @@ const updateTask = (req, res) => {
         id = parseInt(id)
 
         // Find task by ID
-        let filteredbyid = tasks.filter(item => item.id === id)
+        let filteredbyid = tasks.find(item => item.id === id)
 
         // If no task matches the given ID, return error
-        if (filteredbyid.length === 0) {
-            return sendResponse(res, 404, "Invalid Id provided")
+        if (filteredbyid === undefined) {
+            return sendResponse(res, 404, "No task found with the provided ID")
         }
 
-        // Get the index using task ID (assuming 1-based indexing)
-        let index = filteredbyid[0].id - 1;
+        let index = filteredbyid.id;
 
         const allowedBody = ["title", "description", "completed", "priority"]
         const queryKeys = Object.keys(req.body);
@@ -32,7 +31,7 @@ const updateTask = (req, res) => {
         // Check if any disallowed keys are present in the request body
         const invalidbody = queryKeys.filter(key => !allowedBody.includes(key));
         if (invalidbody.length > 0) {
-            return sendResponse(res, 400, `Invalid body parameter(s): ${invalidbody.join(', ')}. Only 'title,'descriptio','completed' and 'priority' is allowed.`)
+            return sendResponse(res, 400, `Invalid body parameter(s): ${invalidbody.join(', ')}. Only 'title,'description','completed' and 'priority' is allowed.`)
         }
 
         // Destructure fields from body
@@ -59,14 +58,11 @@ const updateTask = (req, res) => {
             let checkpriority = priority.toLowerCase();
             const allowedPriority = ["low", "medium", "high"];
 
-            const invalidpriority = allowedPriority.includes(checkpriority);
-
-            if (!invalidpriority) {
-                return sendResponse(res, 400, "Priority accepts only 'Low', 'Medium' and 'High' values");
+            if (!allowedPriority.includes(priority)) {
+                return sendResponse(res, 400, "Priority accepts only 'Low', 'Medium', and 'High' values");
             }
 
-            const newpriority = priority.charAt(0).toUpperCase() + priority.slice(1)
-            tasks[index].priority = newpriority
+            tasks[index].priority = priority.charAt(0).toUpperCase() + priority.slice(1);
         }
 
         // Send success response
@@ -78,4 +74,4 @@ const updateTask = (req, res) => {
     }
 }
 
-module.exports = updateTask;
+module.exports = {updateTask};

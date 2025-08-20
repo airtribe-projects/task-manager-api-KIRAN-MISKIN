@@ -39,7 +39,7 @@ const getAllTasks = (req, res) => {
         if (filteredTasks.length !== 0) {
             return sendResponse(res, 200, filteredTasks);
         } else {
-            return sendResponse(res, 200, "No Tasks Present");
+            return sendResponse(res, 200, "No tasks match the current filter criteria");
         }
 
     } catch (err) {

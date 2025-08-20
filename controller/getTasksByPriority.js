@@ -1,11 +1,11 @@
-let { tasks } = require('../model/localmemory')  // Importing tasks array from local in-memory storage
+const { tasks } = require('../model/localmemory')  // Importing tasks array from local in-memory storage
 const { sendResponse } = require('../utils/responseHandler')  // Importing reusable response handler
 
-const gettasksbypriority = (req, res) => {
+const getTasksByPriority = (req, res) => {
     try {
         // Check if query parameters are provided — if yes, return error (not allowed)
         if (Object.keys(req.query).length > 0) {
-            return sendResponse(res, 400, 'Query parameter are not accepted')
+            return sendResponse(res, 400, 'Query parameters are not accepted')
         }
 
         // Check if body data is sent in GET request — if yes, return error (not allowed)
@@ -21,7 +21,7 @@ const gettasksbypriority = (req, res) => {
 
         // If provided level is not one of the valid levels, return 404
         if (!allowedLevels.includes(level)) {
-            return sendResponse(res, 404, "Invalid Level")
+            return sendResponse(res, 404,'Priority level is invalid. Please provide "low", "medium", or "high".')
         }
 
         // Capitalize the first letter to match stored task format (e.g., "Low", "Medium", "High")
@@ -40,8 +40,8 @@ const gettasksbypriority = (req, res) => {
     } catch (err) {
         // Handle any unexpected runtime errors
         console.log("Error at getTasksByPriority function", err)
-        sendResponse(res, 400, err.message)
+        sendResponse(res, 500, "Internal Server Error")
     }
 }
 
-module.exports = gettasksbypriority;  // Exporting the function to use in routes
+module.exports = getTasksByPriority;  // Exporting the function to use in routes
